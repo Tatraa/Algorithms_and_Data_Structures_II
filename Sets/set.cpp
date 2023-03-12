@@ -168,7 +168,6 @@ public:
         return result;
     }
 
-    //funkcja pomocnicza
     void display() const {
         std::cout << "{ ";
         for (int i = 0; i < count; i++) {
