@@ -1,5 +1,5 @@
-#ifndef priorityque.h
-#define priorityque.h
+#ifndef PRIORITYQUE_H
+#define PRIORITYQUE_H
 
 #include <vector>
 
