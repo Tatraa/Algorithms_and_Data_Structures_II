@@ -1,7 +1,10 @@
 #ifndef PRIORITYQUE_H
 #define PRIORITYQUE_H
 
+#include <iostream>
 #include <vector>
+
+using namespace std;
 
 template<typename T>
 struct QueueElem {
@@ -21,12 +24,16 @@ public:
     }
 
     QueueElem<T> max() const {
-        if (size == 0) throw std::out_of_range("Priority queue is empty");
+        if (size == 0) {
+            cout << "Priority queue is empty" << endl;
+        }
         return elems[0];
     }
 
-    QueueElem<T> extractMax() const {
-        if (size == 0) throw std::out_of_range("Priority queue is empty");
+    QueueElem<T> extractMax() {
+        if (size == 0) {
+            cout << "Priority queue is empty" << endl;
+        }
         QueueElem<T> maxElem = elems[0];
         elems[0] = elems[size - 1];
         elems.pop_back();
@@ -35,8 +42,7 @@ public:
         return maxElem;
     }
 
-private:
-    std::vector<QueueElem<T>> elems;
+    vector<QueueElem<T>> elems;
     int size;
 
     void heapifyUp(int index) {
@@ -57,7 +63,7 @@ private:
             maxIndex = rightChildIndex;
         }
         if (index != maxIndex) {
-            std::swap(elems[index], elems[maxIndex]);
+            swap(elems[index], elems[maxIndex]);
             heapifyDown(maxIndex);
         }
     }
