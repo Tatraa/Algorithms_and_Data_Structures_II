@@ -77,8 +77,8 @@ int main() {
 
     vector<int> result = graph.findMinSejfs();
 
-    cout << "Liczba skarbonek do zniszczenia: " << result.size() << endl;
-    cout << "Numery skarbonek do zniszczenia: ";
+    cout << "Liczba sejfow do zniszczenia: " << result.size() << endl;
+    cout << "Numery sejfow do zniszczenia: ";
     for (int i = 0; i < result.size(); i++) {
         cout << result[i] + 1 << " ";
     }
