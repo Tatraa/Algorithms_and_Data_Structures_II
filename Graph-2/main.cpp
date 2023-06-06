@@ -1,88 +1,58 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
-#include <queue>
+
 using namespace std;
 
-class Graph {
-private:
-    int numVertices;
-    vector<vector<int>> adjMatrix;
+int numBreaks = 0;
 
-public:
-    Graph(int vertices) {
-        numVertices = vertices;
-        adjMatrix.resize(numVertices, vector<int>(numVertices, 0));
+void dfs(int v, vector<int>& listOne, vector<int>& listTwo, int temp) {
+    listTwo[v] = temp;
+    if (listTwo[listOne[v]] == -1)
+        dfs(listOne[v], listOne, listTwo, temp);
+    else if (listTwo[listOne[v]] == temp)
+        numBreaks++;
+}
+
+int main(int argc, char* argv[]) {
+    // Aby wyswietlic wyniki najpierw wykonaj ponizsze komendy:
+    // g++ -std=c++14 main.cpp -o main
+    // ./main tests/test1.txt tests/test2.txt tests/test3.txt tests/test4.txt tests/test5.txt tests/test5.txt tests/test6.txt
+    if (argc < 2) {
+        cout << "Podaj nazwy plikow jako argumenty wiersza polecen." << endl;
+        return 1;
     }
 
-    void addEdge(int src, int dest) {
-        adjMatrix[src][dest] = 1;
-        adjMatrix[dest][src] = 1;
-    }
+    for (int fileIndex = 1; fileIndex < argc; fileIndex++) {
+        ifstream file(argv[fileIndex]);
+        if (!file) {
+            cout << "Nie mozna otworzyc pliku: " << argv[fileIndex] << endl;
+            continue;
+        }
 
-    int getNumVertices() {
-        return numVertices;
-    }
+        int numSafes = 0;
+        file >> numSafes;
 
-    vector<int> findMinSejfs() {
-        vector<int> result;
-        vector<bool> visited(numVertices, false);
-        vector<int> parent(numVertices, -1);
-        vector<int> brokenSejfs(numVertices, 0);
-        queue<int> queue;
+        vector<int> graph(numSafes + 1);
+        for (int i = 0; i < numSafes; i++) {
+            file >> graph[i + 1];
+        }
 
-        visited[0] = true;
-        queue.push(0);
+        file.close();
 
-        while (!queue.empty()) {
-            int current = queue.front();
-            queue.pop();
-
-            for (int neighbor = 0; neighbor < numVertices; neighbor++) {
-                if (adjMatrix[current][neighbor] == 1 && !visited[neighbor]) {
-                    visited[neighbor] = true;
-                    parent[neighbor] = current;
-
-                    brokenSejfs[neighbor] = brokenSejfs[current] + 1;
-
-                    queue.push(neighbor);
-                }
+        int numTemp = 0;
+        vector<int> graphTemp(numSafes + 1, -1);
+        for (int i = 1; i <= numSafes; i++) {
+            if (graphTemp[i] == -1) {
+                dfs(i, graph, graphTemp, numTemp);
+                numTemp++;
             }
         }
 
-        for (int i = 0; i < numVertices; i++) {
-            if (brokenSejfs[i] == 0) {
-                result.push_back(i);
-            }
-        }
+        cout << "Minimalnie nalezy zniszczyc w pliku " << argv[fileIndex] << ": " << numBreaks << " sejfy" << endl;
 
-        return result;
+        numBreaks = 0; // Zerowanie zmiennej dla kolejnego pliku
     }
-};
-
-int main() {
-    int n; // Liczba sejfów
-    cin >> n;
-
-    Graph graph(n);
-
-    // Wczytujemy informacje o sejfach
-    for (int i = 0; i < n; i++) {
-        int key;
-        cin >> key;
-
-        if (key != 0) {
-            graph.addEdge(i, key - 1);
-        }
-    }
-
-    vector<int> result = graph.findMinSejfs();
-
-    cout << "Liczba sejfow do zniszczenia: " << result.size() << endl;
-    cout << "Numery sejfow do zniszczenia: ";
-    for (int i = 0; i < result.size(); i++) {
-        cout << result[i] + 1 << " ";
-    }
-    cout << endl;
 
     return 0;
 }
