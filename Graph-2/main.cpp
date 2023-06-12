@@ -1,8 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 int numBreaks = 0;
 
@@ -15,13 +17,17 @@ void dfs(int v, vector<int>& listOne, vector<int>& listTwo, int temp) {
 }
 
 int main(int argc, char* argv[]) {
+    auto start = high_resolution_clock::now();
+
     // Aby wyswietlic wyniki najpierw wykonaj ponizsze komendy:
     // g++ -std=c++14 main.cpp -o main
-    // ./main tests/test1.txt tests/test2.txt tests/test3.txt tests/test4.txt tests/test5.txt tests/test5.txt tests/test6.txt
+    // ./main tests/test1.txt tests/test1.txt tests/test3.txt tests/test4.txt tests/test5.txt tests/test5.txt tests/test6.txt
     if (argc < 2) {
         cout << "Podaj nazwy plikow jako argumenty wiersza polecen." << endl;
         return 1;
     }
+
+    int numExecutions = 0; // Licznik wykonanych aplikacji
 
     for (int fileIndex = 1; fileIndex < argc; fileIndex++) {
         ifstream file(argv[fileIndex]);
@@ -53,6 +59,10 @@ int main(int argc, char* argv[]) {
 
         numBreaks = 0; // Zerowanie zmiennej dla kolejnego pliku
     }
+    auto end = high_resolution_clock::now();
+
+    auto duration = duration_cast<milliseconds>(end - start);
+    cout << "Czas wykonania: " << duration.count() << " ms" << endl;
 
     return 0;
 }
